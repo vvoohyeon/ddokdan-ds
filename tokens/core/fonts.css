@@ -1,0 +1,14 @@
+/* ===========================================================================
+   Pretendard Variable — the single typeface of Ddokdan Ilbo (똑단일보).
+   Pretendard renders Hangul and Latin with even rhythm and a tall x-height,
+   which keeps it legible at the large reading sizes the format uses.
+   Weight axis: 45–920 (we use 400 / 500 / 600 / 700 / 800).
+   =========================================================================== */
+
+@font-face {
+	font-family: 'Pretendard Variable';
+	font-weight: 45 920;
+	font-style: normal;
+	font-display: swap;
+	src: url('../../assets/fonts/PretendardVariable.woff2') format('woff2-variations');
+}

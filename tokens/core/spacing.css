@@ -1,0 +1,50 @@
+/* ===========================================================================
+   SPACING, RADII, BORDERS & ELEVATION — Ddokdan Ilbo (똑단일보)
+   ---------------------------------------------------------------------------
+   The system is built on PRINT, so the look is flat and ruled, not shadowed.
+   Spacing is an 8px-derived scale with a 4px half-step. Corners are mostly
+   square (newspaper boxes); a small radius is reserved for friendly chips and
+   buttons so the paper feels welcoming without turning babyish.
+   =========================================================================== */
+
+:root {
+	/* --- Spacing scale ---------------------------------------------------- */
+	--s-1:   4px;
+	--s-2:   8px;
+	--s-3:  12px;
+	--s-4:  16px;
+	--s-5:  24px;
+	--s-6:  32px;
+	--s-7:  48px;
+	--s-8:  64px;
+	--s-9:  96px;
+
+	/* --- Layout ----------------------------------------------------------- */
+	--page-pad:      var(--s-7);   /* A4 print margin feel                   */
+	--col-gap:       var(--s-6);   /* gutter of the 2-column grid            */
+	--story-gap:     var(--s-6);   /* vertical space between stories         */
+	--content-max:   1040px;       /* on-screen issue width                  */
+
+	/* --- Radii (square-leaning) ------------------------------------------ */
+	--r-0:    0px;     /* boxes, rules, photo frames — true newspaper        */
+	--r-sm:   4px;     /* inputs, small boxes                                */
+	--r-md:   8px;     /* buttons, chips                                     */
+	--r-pill: 999px;   /* section flags / tags                               */
+
+	/* --- Border widths ---------------------------------------------------- */
+	--bw-hair:   1px;  /* soft dividers                                      */
+	--bw-rule:   2px;  /* story rules, boxed items                          */
+	--bw-heavy:  3px;  /* masthead rule, emphasis frames                    */
+	--bw-mast:   5px;  /* the thick line under the masthead                 */
+
+	/* --- Elevation -------------------------------------------------------- */
+	/* Print has no shadows; on-screen we allow ONE soft lift for floating   */
+	/* UI (dialogs, toasts). Cards stay flat with borders.                   */
+	--shadow-none: none;
+	--shadow-lift: 0 6px 24px rgba(28, 27, 25, 0.14);
+	--shadow-pop:  0 2px 10px rgba(28, 27, 25, 0.10);
+
+	/* --- Focus ------------------------------------------------------------ */
+	--focus-width: 3px;
+	--focus-offset: 2px;
+}

@@ -1,0 +1,58 @@
+/* ===========================================================================
+   TYPOGRAPHY — Ddokdan Ilbo (똑단일보)
+   ---------------------------------------------------------------------------
+   One family (Pretendard Variable). Big, open sizing tuned for comfortable
+   reading: large body copy, generous line-height, and `word-break: keep-all`
+   so Korean lines break between words, never mid-word.
+   Scale is gentle (≈1.2 ratio) so headlines stay calm and newspaper-credible.
+   =========================================================================== */
+
+:root {
+	/* --- Family ----------------------------------------------------------- */
+	--font-sans: 'Pretendard Variable', -apple-system, BlinkMacSystemFont,
+	             'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+	/* The whole brand is one family; alias kept for clarity in components. */
+	--font-display: var(--font-sans);
+	--font-body:    var(--font-sans);
+
+	/* --- Weights ---------------------------------------------------------- */
+	--w-regular:  400; /* @kind font */
+	--w-medium:   500; /* @kind font */
+	--w-semibold: 600; /* @kind font */
+	--w-bold:     700; /* @kind font */
+	--w-heavy:    800; /* @kind font */
+
+	/* --- Type scale (px) -------------------------------------------------- */
+	/* These are the CANONICAL RENDER SIZES for BARE elements (base.css). Where a
+	   .cdn-* component sets its own font-size, THAT hardcode in components.css is
+	   the source of truth and is what ships — these tokens are reconciled to match
+	   it (2026-07-03 render-truth pass, measured against edition E3-0611). The
+	   print A4 rendering of body is ~13.5pt. Do NOT treat this scale as a second,
+	   independent scale: it mirrors the component render sizes. */
+	--fs-masthead: 60px;  /* the paper's name on the front plate (= .mast-name)   */
+	--fs-display:  44px;  /* NOMINAL — no current consumer (only bare <h2> chain) */
+	--fs-h1:       31px;  /* story headline (= .art-head h1)                      */
+	--fs-h2:       26px;  /* NOMINAL — no current consumer (only bare <h2>)       */
+	--fs-h3:       21px;  /* small headline / strong label                       */
+	--fs-lead:     21px;  /* lead paragraph / standfirst (= .hook)                */
+	--fs-body:     18px;  /* DEFAULT reading size (= .cdn-issue p) — ~13.5pt A4   */
+	--fs-small:    18px;  /* secondary body, sidebars                            */
+	--fs-caption:  15px;  /* captions, bylines, credits                          */
+	--fs-label:    13px;  /* kickers, flags, metadata (usually UPPERCASE)        */
+	--fs-fine:     12px;  /* answer-key / fine print (~9pt on A4)                */
+
+	/* --- Line heights ----------------------------------------------------- */
+	--lh-tight:   1.18;   /* @kind font */ /* large headlines             */
+	--lh-snug:    1.35;   /* @kind font */ /* sub-heads, leads            */
+	--lh-body:    1.75;   /* @kind font */ /* reading copy, airy          */
+	--lh-loose:   1.9;    /* @kind font */ /* long-form passages          */
+
+	/* --- Letter-spacing (Hangul reads best very slightly tight) ---------- */
+	--ls-tight:   -0.02em; /* big display/headlines                         */
+	--ls-normal:  -0.01em; /* body                                          */
+	--ls-label:    0.08em; /* uppercase kickers / flags (Latin & digits)    */
+
+	/* --- Reading guards --------------------------------------------------- */
+	--measure:     34em;   /* comfortable column width                      */
+	--word-break:  keep-all; /* @kind other */
+}

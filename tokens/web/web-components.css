@@ -1,0 +1,349 @@
+/* ===========================================================================
+   WEB COMPONENTS — Ddokdan Ilbo (똑단일보)
+   ---------------------------------------------------------------------------
+   This file contains ONLY: ① layout + interaction OVERLAYS on the shared
+   .cdn-* elements (brief §4.2 A · B ONLY) and ② web-only NEW components. The
+   visual identity of the shared elements — colour, border, radius, shadow,
+   typography, inner padding, constant labels — is the SINGLE SOURCE OF TRUTH
+   in tokens/components.css and is NOT redefined here.
+
+   Every rule that touches a shared element is tagged  [layout]  or
+   [interaction]  and is recorded in the divergence ledger (report §B-2).
+   Zero §4.2-C (visual-identity) properties are declared on shared elements.
+
+   FIXED-CONTENT RULE: shared .cdn-* content elements keep their components.css
+   PIXEL sizes (fixed = print). This file MUST NOT set `font-size` on any shared
+   content selector — doing so breaks print/web parity. Fluid type is web-only
+   chrome (shell / issue-head), never content.
+
+   Breakpoints (single definition = web-layer.css §3, mobile-first):
+       sm 480px · md 768px · lg 1040px (== --content-max).
+   =========================================================================== */
+
+
+/* ===========================================================================
+   1 · WEB PAGE FRAME  —  furniture, not a shared content element.
+   The online page is a fluid reading column, not a fixed A4 sheet. (The A4
+   screen-preview rule lives in print-core.css, which web.css does not import.)
+   =========================================================================== */
+@media screen {
+	/* Web reading surface = warm paper (not the paper-2 "desk" the print
+	   preview uses behind its A4 sheet). body is furniture, not a .cdn-* el. */
+	body { background: var(--shell-bg); padding: 0; }
+}
+
+/* The issue wrapper becomes the centred fluid reading column. [layout]
+   width / max-width / auto-margins / page side-padding = layout mechanics (A):
+   they absorb the A4-fixed ↔ fluid-viewport physical difference. */
+.cdn-issue {                                   /* [layout] */
+	width: auto;
+	max-width: var(--web-content-max);         /* 1040px reference column */
+	margin-inline: auto;
+	padding-inline: var(--web-pad-inline);
+}
+@media (max-width: 479.98px) {
+	.cdn-issue { padding-inline: var(--web-pad-inline-sm); }  /* [layout] */
+}
+
+
+/* ===========================================================================
+   2 · SHARED-ELEMENT LAYOUT OVERLAYS  (§4.2-A · §6.1)
+   Resting appearance is unchanged; only layout mechanics differ so the fixed
+   A4 column relaxes into a fluid viewport. Each rule is ledgered.
+   =========================================================================== */
+
+/* Body paragraphs — hold the 34em reading measure inside the wide 1040px
+   column. components.css sets `:where(.cdn-issue) p{max-width:none}` for the
+   narrow A4 column; on the wide web column the measure is restored so lines
+   don't over-run. Scoped to BODY-FLOW paragraphs only — the shared boxes
+   (.hook, .cdn-dyk p, …) keep their components.css behaviour (§6.1). max-width
+   is a category-A mechanic. [layout] */
+.cdn-issue .cdn-article > p,
+.cdn-issue .cdn-figblock > p { max-width: var(--measure); }    /* [layout] */
+
+/* Figures — mobile: full-width (float released); md+: the print float width.
+   No change to border / caption / ratio (those stay in components.css). */
+.cdn-issue .fig-float-left,
+.cdn-issue .fig-float-right {                  /* [layout] */
+	float: none;
+	width: 100%;
+	margin: 0 0 14px;
+}
+@media (min-width: 768px) {
+	.cdn-issue .fig-float-right {               /* [layout] */
+		float: right; width: var(--fig-float-w); margin: 2px 0 10px 22px;
+	}
+	.cdn-issue .fig-float-left {                /* [layout] */
+		float: left; width: var(--fig-float-w); margin: 2px 22px 10px 0;
+	}
+}
+
+/* Vocabulary grid — reuse the existing .wc-grid column mechanism (no new
+   grid): mobile 1 column, md+ 2 columns. Overrides the print 3-col / :has()
+   count logic; card visuals untouched. [layout] */
+.cdn-issue .wc-grid { grid-template-columns: 1fr; }  /* [layout] */
+@media (min-width: 768px) {
+	.cdn-issue .wc-grid { grid-template-columns: 1fr 1fr; }   /* [layout] */
+}
+/* The print aside/rail variants float on A4; on the fluid web column they
+   relax to the normal full-width block flow. [layout] */
+.cdn-issue .cdn-wordcard--aside,
+.cdn-issue .cdn-rail {                          /* [layout] */
+	float: none; width: 100%; margin: 18px 0;
+}
+
+
+/* ===========================================================================
+   3 · SHARED-ELEMENT INTERACTION OVERLAYS  (§4.2-B · §6.1)
+   Additive hover/focus only. Resting appearance == print. Ledgered.
+   =========================================================================== */
+
+/* Body links gain a hover/active darken + thicker underline (dual signal:
+   colour + underline weight). Resting colour/underline == base.css. [interaction] */
+.cdn-issue a:hover {                            /* [interaction] */
+	color: var(--link-hover);
+	text-decoration-thickness: 3px;
+}
+.cdn-issue a:active { color: var(--link-active); }   /* [interaction] */
+
+/* Kicker/flag helpers, WHEN a web page wraps them in a link, get a hover cue.
+   The resting kicker (colour, tracking, uppercase) is untouched. [interaction] */
+a > .cdn-kicker,
+a > .art-kicker,
+.cdn-kicker a,
+.art-kicker a { transition: opacity .12s ease; }     /* [interaction] */
+a:hover > .cdn-kicker,
+a:hover > .art-kicker,
+.cdn-kicker a:hover,
+.art-kicker a:hover { opacity: .7; }                 /* [interaction] */
+
+
+/* ===========================================================================
+   4 · WEB-ONLY NEW COMPONENTS  (§6.2)  —  the discretionary layer.
+   These have NO print counterpart. Their DNA (type, colour, radii, borders)
+   is drawn from the SAME core tokens the shared elements use. All colour goes
+   through semantic aliases / web-layer state tokens — no raw hex.
+   =========================================================================== */
+
+/* --- 4.1 · Global shell header -------------------------------------------
+   Markup contract:
+     <header class="cdn-shell">
+       <div class="cdn-shell__bar">
+         <a class="cdn-shell__wordmark" href="/">똑단일보</a>
+         <nav class="cdn-shell__nav">
+           <a class="cdn-shell__navlink" href="…">사회</a> …
+         </nav>
+         <button class="cdn-shell__menu" aria-expanded="false"
+                 aria-controls="…" aria-label="메뉴">≡</button>   (≤ md)
+       </div>
+     </header>
+   The wordmark is a TEXT lockup (never an image) — a reduced masthead variant.
+   The bottom rule uses --bw-mast (the SAME token the print masthead rule is
+   locked to) so shell + masthead stay at one source of truth. */
+.cdn-shell {
+	background: var(--shell-bg);
+	border-bottom: var(--bw-mast) solid var(--shell-rule);   /* = 5px, locked to masthead */
+}
+.cdn-shell__bar {
+	max-width: var(--web-content-max);
+	min-height: var(--shell-h);
+	margin-inline: auto;
+	padding: var(--s-2) var(--web-pad-inline);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--s-5);
+}
+.cdn-shell__wordmark {
+	font-family: var(--font-display);
+	font-size: clamp(24px, 3vw, 34px);   /* reduced masthead lockup */
+	font-weight: var(--w-heavy);
+	letter-spacing: -0.03em;
+	line-height: 1;
+	color: var(--blue);
+	text-decoration: none;
+}
+.cdn-shell__nav {
+	display: flex;
+	align-items: center;
+	gap: var(--s-5);
+}
+.cdn-shell__navlink {
+	font-size: var(--fs-small-fluid);
+	font-weight: var(--w-semibold);
+	color: var(--nav-fg);
+	text-decoration: none;
+	padding: var(--s-1) 0;
+	border-bottom: var(--bw-rule) solid transparent;   /* shape channel, reserved */
+}
+.cdn-shell__navlink:hover,
+.cdn-shell__navlink[aria-current="page"] {
+	color: var(--nav-fg-hover);
+	border-bottom-color: var(--accent);                /* colour + underline */
+}
+.cdn-shell__menu {
+	display: none;                                      /* shown ≤ md below */
+	font-size: var(--fs-h2);
+	line-height: 1;
+	color: var(--nav-fg);
+	background: transparent;
+	border: 0;
+	padding: var(--s-1) var(--s-2);
+	cursor: pointer;
+}
+@media (max-width: 767.98px) {
+	.cdn-shell__nav  { display: none; }   /* collapse behind the menu button */
+	.cdn-shell__menu { display: inline-flex; }
+}
+
+/* --- 4.2 · Per-issue masthead block --------------------------------------
+   Markup contract:
+     <div class="cdn-issuehead">
+       <span class="mast-edition">L3 발행본</span>       (reuses components.css)
+       <time class="cdn-issuehead__date" datetime="2026-07-03">2026년 7월 3일</time>
+       <span class="cdn-issuehead__no">제 128호</span>
+     </div>
+   .mast-edition styling is inherited unchanged from components.css. */
+.cdn-issuehead {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--s-2) var(--s-4);
+	padding-bottom: var(--s-3);
+	margin-bottom: var(--s-5);
+	border-bottom: var(--bw-heavy) solid var(--rule);
+}
+.cdn-issuehead__date { font-size: var(--fs-caption-fluid); color: var(--text-meta); font-weight: var(--w-semibold); white-space: nowrap; }
+.cdn-issuehead__no   { font-size: var(--fs-caption-fluid); color: var(--text-secondary); font-weight: var(--w-bold); margin-inline-start: auto; white-space: nowrap; }
+
+/* --- 4.3 · Level segmented control  (L3 ↔ L6) ----------------------------
+   L3 and L6 are SEPARATE ROUTES on the site, so this is navigation, not an
+   in-page tab/panel toggle. Markup contract:
+     <nav class="cdn-segment" aria-label="난이도">
+       <a class="cdn-segment__opt" href="/l3/" aria-current="page">L3</a>
+       <a class="cdn-segment__opt" href="/l6/">L6</a>
+     </nav>
+   Selection is carried by aria-current="page" (semantic source of truth);
+   selected state = blue fill + pill (colour + shape dual signal). */
+.cdn-segment {
+	display: inline-flex;
+	border: var(--bw-rule) solid var(--accent);
+	border-radius: var(--r-pill);
+	overflow: hidden;
+	background: var(--surface-page);
+}
+.cdn-segment__opt {
+	font-family: var(--font-display);
+	font-size: var(--fs-small);
+	font-weight: var(--w-heavy);
+	letter-spacing: 0.02em;
+	color: var(--accent);
+	text-decoration: none;
+	padding: var(--s-2) var(--s-5);
+	line-height: 1.1;
+	white-space: nowrap;
+}
+.cdn-segment__opt:hover { background: var(--chip-bg-hover); }
+.cdn-segment__opt[aria-current="page"] {
+	background: var(--chip-selected-bg);
+	color: var(--chip-selected-fg);
+}
+
+/* --- 4.4 · Badge set ------------------------------------------------------
+   Markup contract:  <span class="cdn-badge cdn-badge--{level|region|depth|pending}">…</span>
+   Pill (radius 999); a text label ALWAYS present (never colour-only). Warm is
+   used by --depth only (see report §B-2 item 2 for the warm-rationing rule).
+   The depth badge is the TEXT "심층" — no emoji (§7-1); a Lucide line-star may
+   be placed before it by the author, optional. */
+.cdn-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s-1);
+	border-radius: var(--r-pill);
+	font-size: var(--fs-label);
+	font-weight: var(--w-heavy);
+	letter-spacing: 0.02em;
+	line-height: 1;
+	padding: 5px 12px;
+	white-space: nowrap;
+}
+.cdn-badge--level   { background: var(--badge-level-bg);  color: var(--badge-level-fg); }
+.cdn-badge--region  { background: var(--badge-region-bg); color: var(--badge-region-fg); border: 1.5px solid var(--badge-region-border); }
+.cdn-badge--depth   { background: var(--badge-depth-bg);  color: var(--badge-depth-fg); border: 1.5px solid var(--badge-depth-border); }
+.cdn-badge--pending { background: var(--badge-pending-bg); color: var(--badge-pending-fg); border: 1.5px dashed var(--badge-pending-border); }
+
+/* --- 4.5 · Quiz answer reveal --------------------------------------------
+   Works with NO JavaScript (native <details>/<summary>). Markup contract:
+     <details class="cdn-reveal">
+       <summary class="cdn-reveal__toggle">정답 보기</summary>
+       <div class="cdn-reveal__body">
+         <span class="cdn-reveal__label">정답</span> ② 지구
+         <span class="cdn-badge cdn-badge--level">L3</span>
+       </div>
+     </details>
+   The quiz question block itself is unchanged — the reveal is added AFTER it. */
+.cdn-reveal { margin-top: var(--s-4); }
+.cdn-reveal__toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s-2);
+	font-family: var(--font-display);
+	font-size: var(--fs-small);
+	font-weight: var(--w-bold);
+	color: var(--accent);
+	background: var(--surface-page);
+	border: var(--bw-rule) solid var(--accent);
+	border-radius: var(--r-md);
+	padding: var(--s-2) var(--s-4);
+	cursor: pointer;
+	list-style: none;
+	white-space: nowrap;
+}
+.cdn-reveal__toggle::-webkit-details-marker { display: none; }
+.cdn-reveal__toggle::before {
+	content: "▸";
+	font-size: 0.8em;
+	transition: transform .12s ease;
+}
+.cdn-reveal[open] .cdn-reveal__toggle::before { transform: rotate(90deg); }
+.cdn-reveal__toggle:hover { background: var(--chip-bg-hover); }
+.cdn-reveal__body {
+	margin-top: var(--s-3);
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--s-2) var(--s-3);
+	background: var(--reveal-bg);
+	border-left: 4px solid var(--reveal-accent);
+	padding: var(--s-3) var(--s-4);
+	font-size: var(--fs-small);
+}
+.cdn-reveal__label {
+	font-weight: var(--w-heavy);
+	color: var(--reveal-accent);
+}
+
+/* --- 4.6 · Button utility  (exercises the §5.1 button tokens) -------------
+   General web button. Active state differs from hover by SHAPE (1px translate),
+   because --btn-bg-hover and --btn-bg-active resolve to the same colour
+   (--accent-press == --blue-strong) — see web-layer.css note. */
+.cdn-btn {
+	font-family: var(--font-display);
+	font-size: var(--fs-small);
+	font-weight: var(--w-bold);
+	color: var(--btn-fg);
+	background: var(--btn-bg);
+	border: var(--bw-rule) solid var(--btn-border);
+	border-radius: var(--r-md);
+	padding: var(--s-2) var(--s-5);
+	cursor: pointer;
+	white-space: nowrap;
+}
+.cdn-btn:hover  { background: var(--btn-bg-hover);  border-color: var(--btn-border-hover); }
+.cdn-btn:active { background: var(--btn-bg-active); border-color: var(--btn-border-active); transform: translateY(1px); }
+.cdn-btn:disabled {
+	background: var(--btn-disabled-bg);
+	color: var(--btn-disabled-fg);
+	border-color: var(--btn-disabled-border);
+	cursor: not-allowed;
+}

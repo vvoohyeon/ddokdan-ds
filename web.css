@@ -1,0 +1,27 @@
+/* ===========================================================================
+   Ddokdan Ilbo (똑단일보) — WEB entry point.
+   The online consumer (build-time import: `import 'ddokdan-ds/web.css'`).
+   Order is FIXED and load-bearing:
+     1. core tokens          — the frozen foundation.
+     2. web-layer.css        — web-only VARIABLES (interaction states, fluid
+                               type, breakpoints doc, responsive behaviour).
+                               Must load BEFORE the shared visual layer so the
+                               shared layer can consume fluid variables.
+     3. components.css       — the SAME shared visual single-source-of-truth the
+                               print entry consumes. Not redefined for web.
+     4. web-components.css   — layout/interaction OVERLAY on shared .cdn-*
+                               elements (§4.2 A·B only) + web-only furniture.
+                               Must load AFTER components.css so its layout
+                               mechanics win the cascade.
+   print-core.css is intentionally ABSENT — a browser has no reason to receive
+   the A4 paged-media page contract.
+   =========================================================================== */
+
+@import url('./tokens/core/fonts.css');
+@import url('./tokens/core/colors.css');
+@import url('./tokens/core/typography.css');
+@import url('./tokens/core/spacing.css');
+@import url('./tokens/core/base.css');
+@import url('./tokens/web/web-layer.css');
+@import url('./tokens/components.css');
+@import url('./tokens/web/web-components.css');

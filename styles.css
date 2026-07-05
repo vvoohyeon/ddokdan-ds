@@ -1,0 +1,24 @@
+/* ===========================================================================
+   Ddokdan Ilbo (똑단일보) — Design System global entry point.
+   Consumers link THIS one file. It is an @import manifest only; all real
+   declarations live in the files below.
+
+   tokens/core/*         — fonts, colors, typography, spacing, element defaults.
+   tokens/print/print-core.css — CSS-native A4 PRINT CONTRACT (page fidelity /
+                           nothing cut, unbreakable blocks, uncropped photos).
+   tokens/components.css — shared VISUAL layer for the .cdn-* issue components
+                           (masthead, article, hook, figures, 알고있었나요?,
+                           어휘 카드, 오늘의 질문, quiz, 여백 꼭지, 정답 모음).
+                           The publishing prompt emits the class structure; the
+                           design system carries the look + constant labels.
+                           This SAME file is consumed by the web entry (web.css)
+                           — the structural guarantee of cross-media consistency.
+   =========================================================================== */
+
+@import url('./tokens/core/fonts.css');
+@import url('./tokens/core/colors.css');
+@import url('./tokens/core/typography.css');
+@import url('./tokens/core/spacing.css');
+@import url('./tokens/core/base.css');
+@import url('./tokens/print/print-core.css');
+@import url('./tokens/components.css');

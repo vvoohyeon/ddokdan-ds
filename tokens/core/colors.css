@@ -1,0 +1,70 @@
+/* ===========================================================================
+   COLORS — Ddokdan Ilbo (똑단일보)
+   ---------------------------------------------------------------------------
+   Two accents only: a deep credible newspaper BLUE and one WARM red-orange.
+   Everything is GRAYSCALE-SAFE: issues are routinely printed at home in
+   black-and-white, so meaning never rests on hue alone. Each accent has an
+   ink-equivalent gray, and the system leans on contrast, borders and labels.
+   =========================================================================== */
+
+:root {
+	/* --- Paper & ink (the grayscale backbone) ----------------------------- */
+	--paper:        #FBF9F4;   /* warm newsprint white — the default surface  */
+	--paper-2:      #F3EFE6;   /* tinted panel / sidebar block                */
+	--paper-edge:   #ECE7DA;   /* faint fill behind boxed items               */
+
+	--ink:          #1C1B19;   /* body text — near-black, warm                */
+	--ink-2:        #3D3B37;   /* secondary text                              */
+	--ink-3:        #6B6862;   /* captions, metadata, bylines                 */
+	--ink-4:        #9A968D;   /* disabled, faint hints                       */
+
+	--rule:         #1C1B19;   /* hairline & masthead rules (full-strength)   */
+	--rule-soft:    #CFC9BB;   /* soft dividers between stories               */
+	--rule-faint:   #E4DECF;   /* faintest grid lines                         */
+
+	/* --- Primary: Newspaper Blue ----------------------------------------- */
+	--blue:         #16386E;   /* deep masthead blue — primary accent         */
+	--blue-strong:  #0E2750;   /* pressed / heavy emphasis                    */
+	--blue-tint:    #E4EAF3;   /* blue wash behind callouts (B&W → light gray)*/
+	--blue-tint-2:  #C9D6E8;   /* slightly deeper wash / borders              */
+
+	/* --- Secondary: Warm Red-Orange -------------------------------------- */
+	--warm:         #C8442A;   /* warm accent — section flags, key numbers    */
+	--warm-strong:  #A23420;   /* pressed                                     */
+	--warm-tint:    #F8E5DD;   /* warm wash behind callouts                   */
+	--warm-tint-2:  #EFC9BC;   /* deeper warm wash / borders                  */
+
+	/* --- Semantic (kept muted & newsprint-friendly) ---------------------- */
+	--good:         #2F6B3A;   /* "맞았어요" correct / positive               */
+	--good-tint:    #E3EFE2;
+	--note:         #8A5A12;   /* "알아두기" note / highlight                 */
+	--note-tint:    #F6ECD7;
+
+	/* =====================================================================
+	   SEMANTIC ALIASES — author against these, not the raw values above.
+	   ===================================================================== */
+	--surface-page:     var(--paper);
+	--surface-panel:    var(--paper-2);
+	--surface-box:      var(--paper-edge);
+
+	--text-body:        var(--ink);
+	--text-secondary:   var(--ink-2);
+	--text-meta:        var(--ink-3);
+	--text-faint:       var(--ink-4);
+	--text-on-blue:     #FBF9F4;
+	--text-on-warm:     #FBF9F4;
+
+	--divider:          var(--rule-soft);
+	--divider-faint:    var(--rule-faint);
+	--hairline:         var(--rule);
+
+	--accent:           var(--blue);          /* primary accent              */
+	--accent-press:     var(--blue-strong);
+	--accent-wash:      var(--blue-tint);
+
+	--flag:             var(--warm);          /* section flags / kickers     */
+	--flag-press:       var(--warm-strong);
+	--flag-wash:        var(--warm-tint);
+
+	--focus-ring:       var(--blue);
+}

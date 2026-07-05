@@ -1,0 +1,238 @@
+/* ===========================================================================
+   PRINT CORE — Ddokdan Ilbo (똑단일보)
+   ---------------------------------------------------------------------------
+   The CSS-native A4 print contract for HAND- or AGENT-AUTHORED issue HTML —
+   the plain-HTML publishing path (an issue written as ordinary markup, then
+   printed / exported to PDF). It carries NO JavaScript and does NO measurement:
+   the browser's own paged-media engine fills A4 pages, while the rules here
+   guarantee the three things a home printout must never get wrong.
+
+     1. PAGE FIDELITY — every sheet is exactly A4 and content never bleeds,
+        drifts, or accumulates past it. There is NO fixed-height page wrapper to
+        overflow; an oversized block simply flows onto the next page, so —
+        unlike a clipped fixed box — NOTHING IS EVER CUT.
+     2. UNBREAKABLE BLOCKS — a figure, a fact box, a word box, one quiz
+        question, the answer box are NEVER split across a page break (no empty
+        box shells, no half questions).
+     3. UNCROPPED PHOTOS — images keep their true aspect ratio and are NEVER
+        cropped to fill a frame.
+
+   SCOPE. This is the publishing path: an issue written as plain .cdn-* markup
+   and printed / exported. The design system is CSS-only — components.css dresses
+   every .cdn-* block and injects the constant section labels (퀴즈, 이런 일도
+   있었어요); this file owns the page contract. For output: LINK this stylesheet
+   (already @imported by styles.css) OR inline it verbatim, then build the issue
+   with the .cdn-* contract below. Do NOT hand-roll page sizing, never put
+   `min-height` on a page wrapper, never use `object-fit: cover` on a photo.
+
+   MINIMAL DOCUMENT SHAPE the contract expects:
+
+     <div class="cdn-issue">
+       <header class="masthead">…제호 + 초N 발행본 + date…</header>   (page 1 only)
+       <article class="cdn-article">
+         <div class="art-head"><h1>…</h1><div class="art-kicker">…</div></div>
+         <p class="hook">…</p>                                  (no lead sentence)
+         <figure class="cdn-figure"><img src="art01-main.png"></figure>
+         <p>…paragraphs, floats…</p>
+         <aside class="cdn-dyk">알고 있었나요? …</aside>
+         <div class="cdn-wordcard"><div class="wc-grid cols-N">어휘 카드 …</div></div>
+         <div class="cdn-callout">오늘의 질문 …</div>
+         <section class="cdn-quiz">…<div class="cdn-question">…Qn…</div>…</section>
+       </article>
+       …more articles…
+       <section class="cdn-fillers"><div class="fl-grid cols-N">이런 일도 있었어요 …</div></section>
+       <section class="cdn-answers cdn-answers--isolate">정답 모음 …</section>
+       <div class="cdn-box feedback">…피드백 QR…</div>
+     </div>
+
+   NOTE: Chromium `page.pdf()` DOES render @page margin boxes (measured): the
+   @bottom-left/@bottom-right below emit the repeating running line + page
+   number at the FOOT of pages 2+, `@page :first` suppresses them on page 1,
+   and `:root` custom properties propagate into the margin boxes. The renderer
+   injects --cdn-masthead / --cdn-date on :root; no per-page authoring and no
+   Chromium headerTemplate.
+   =========================================================================== */
+
+
+/* ---------------------------------------------------------------------------
+   1 · THE PAGE  —  A4 with an asymmetric safe margin. PAGE 1: T10 / R12 / B15 /
+   L12mm; PAGES 2+: T12.5mm. The 15mm BOTTOM band hosts the repeating running
+   line (§2) — moved down from the top band (2026-07-02): the page head stays
+   quiet, and the body keeps the exact start position it had when the header
+   lived up top (본문 상단 여백 불변 — 사용자 결정 B). The document flows and the
+   engine paginates; there are no `.sheet{height}` wrappers to overflow, so
+   drift and clipping are structurally impossible.
+   --------------------------------------------------------------------------- */
+@page {
+	size: A4 portrait;
+	margin: 12.5mm 12mm 15mm 12mm;   /* T R B L — 본문 시작 위치는 상단 헤더 시절과 동일(12.5mm) 유지(B). 하단 15mm 밴드 = 러닝 라인(A). Page 1 top → @page:first 10mm. */
+}
+
+/* ---------------------------------------------------------------------------
+   2 · RUNNING FOOTER LINE + PAGE NUMBER  —  true page furniture in the BOTTOM
+   page margin, repeated on pages 2+ WITHOUT the author placing one per page.
+   Moved from the top band (2026-07-02, 사용자 결정 A): the thin line at the page
+   head competed with the content for attention; the bottom keeps it available
+   but unobtrusive. The author sets two strings once on :root; page 1 is left
+   clean for the full in-flow Masthead.
+
+       :root { --cdn-masthead: "똑단일보"; --cdn-date: "2026년 6월 24일"; }
+
+   `counter(page)` is universally supported. Chromium `page.pdf` renders @page
+   margin boxes and honours vertical-align + padding inside them (실측 확인).
+   --------------------------------------------------------------------------- */
+@page {
+	@bottom-left {
+		content: var(--cdn-masthead, "");
+		font-family: var(--font-sans);
+		font-size: 9.5pt;
+		font-weight: 700;
+		color: var(--blue);
+		vertical-align: bottom;
+		padding-bottom: 7.4mm;   /* 러닝 라인 잉크 하단 ≈ 페이지 하단에서 8mm(잘림 안전, 기존 6.2mm에서 7px 상향) · 본문과 ≈13px 이격(요구 ≥4px 충족) */
+	}
+	@bottom-right {
+		content: var(--cdn-date, "") "  ·  " counter(page) "면";
+		font-family: var(--font-sans);
+		font-size: 9.5pt;
+		color: var(--ink-3);
+		vertical-align: bottom;
+		padding-bottom: 7.4mm;   /* @bottom-left 와 동일 기준선 */
+	}
+}
+@page :first {
+	margin-top: 10mm;             /* page 1: 마스트헤드를 2mm 위로 — 좌우 12mm 대비 균형 */
+	@bottom-left  { content: ""; }   /* page 1 → full in-flow Masthead, no running line */
+	@bottom-right { content: ""; }
+}
+
+/* The footer line sits LOW in the bottom-margin band (not centred in it), so it
+   reads as page furniture, clearly separated from the body above. Chromium
+   honours vertical-align:bottom + padding-bottom inside margin boxes (실측 —
+   과거 "ignored" 주석은 오류였음). These .pagedjs_* parity rules exist ONLY when
+   the print-media polyfill runs — on the plain Chromium path they match nothing
+   and are harmless. */
+.pagedjs_margin-bottom-left,
+.pagedjs_margin-bottom-right { align-items: flex-end !important; }
+.pagedjs_margin-bottom-left  > .pagedjs_margin-content,
+.pagedjs_margin-bottom-right > .pagedjs_margin-content {
+	display: flex; align-items: flex-end; height: 100%; padding-bottom: 7.4mm;
+}
+
+/* ---------------------------------------------------------------------------
+   3 · DOCUMENT ROOT  —  the issue wrapper. Korean-aware breaking, brand ink.
+   --------------------------------------------------------------------------- */
+.cdn-issue {
+	font-family: var(--font-sans);
+	color: var(--ink);
+	word-break: keep-all;
+}
+
+/* ---------------------------------------------------------------------------
+   4 · UNBREAKABLE BLOCKS  —  never split across a page break. An oversized one
+   moves WHOLE to the next page (it is never cut). Editorial bodies are short by
+   rule, so keeping a body atomic never forces a clip.
+   --------------------------------------------------------------------------- */
+.cdn-figure,      /* a photo + caption                              */
+figure,           /* any bare figure, as a safety net               */
+.cdn-box,         /* generic ruled box                              */
+.cdn-dyk,         /* 알고 있었나요?                                  */
+.cdn-wordcard,    /* 어휘 카드                                       */
+.cdn-callout,     /* 오늘의 질문 / 이렇게 하세요                      */
+.cdn-question,    /* one quiz question                              */
+.cdn-quiz-item,   /* alias for one quiz question                    */
+.cdn-answers {    /* 정답 모음                                       */
+	break-inside: avoid;
+}
+
+/* A quiz as a whole MAY break between questions; each question stays whole. */
+.cdn-quiz { break-inside: auto; }
+
+/* ---------------------------------------------------------------------------
+   5 · PHOTOS  —  true aspect ratio, NEVER cropped.
+   Intrinsic sizing: the image fills the column width and takes its OWN natural
+   height. No fixed-height box, no `object-fit: cover`. `!important` (which beats
+   a non-important inline style) plus the child-reset defend against a generator
+   that wraps the image in a sized / clipped box.
+   Canonical markup:  <figure class="cdn-figure"><img src="…"></figure>
+   --------------------------------------------------------------------------- */
+.cdn-figure { margin: 0; }
+
+.cdn-figure img {
+	display: block;
+	width: 100% !important;
+	height: auto !important;     /* intrinsic height ⇒ real ratio, never cropped */
+	max-width: 100%;
+	object-fit: contain;         /* harmless at intrinsic size; never 'cover'    */
+}
+
+/* Defense: if a generator wraps the <img> in a fixed-height / clipped /
+   ratio-locked box, neutralize that box so the image can show in full. */
+.cdn-figure > * {
+	height: auto !important;
+	max-height: none !important;
+	aspect-ratio: auto !important;
+	overflow: visible !important;
+}
+
+/* The striped "사진" placeholder (shown until a real photo is wired) keeps a
+   sized ratio box so the layout previews correctly. Set --cdn-fig-ratio to the
+   intended ratio (default 16/9). */
+.cdn-figure--placeholder {
+	aspect-ratio: var(--cdn-fig-ratio, 16 / 9);
+	width: 100%;
+	background: var(--paper-edge);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+/* ---------------------------------------------------------------------------
+   6 · COMPOSITION UTILITIES  —  opt-in. print-core imposes NO article / answer
+   layout of its own; the publishing layer decides page flow and applies these.
+   --------------------------------------------------------------------------- */
+.cdn-page-before      { break-before: page; }   /* start this block on a fresh page  */
+.cdn-page-after       { break-after:  page; }
+.cdn-answers--isolate { break-before: page; }    /* keep an answer box off its quiz page (solve-first) */
+
+/* Optional newspaper rhythm: make every article open a new page EXCEPT the
+   first (which shares page 1 with the Masthead). Add the class .cdn-paged to
+   .cdn-issue to enable; omit it for dense continuous flow (the DS default,
+   where short bodies pack top-to-bottom and a body only moves to the next page
+   when it would not fit). */
+.cdn-paged .cdn-article { break-before: page; }
+/* Keep these as TWO separate rules — do NOT re-group into one comma-separated
+   selector list. Paged.js 0.4.3 throws "item doesn't belong to list" when a
+   grouped selector list carries `break-before: avoid`; split rules are
+   identical in effect and render cleanly. (Each selector alone is fine; only
+   the comma-grouped form crashes the polyfill.) */
+.cdn-paged > header + .cdn-article { break-before: avoid; }
+.cdn-paged .cdn-article:first-of-type { break-before: avoid; }
+
+/* ---------------------------------------------------------------------------
+   7 · SCREEN PREVIEW (optional)  —  show the issue at true A4 width on screen so
+   authors preview the printed measure. Print ignores this; @page governs paper.
+   --------------------------------------------------------------------------- */
+@media screen {
+	.cdn-issue {
+		width: 210mm;
+		margin: 0 auto;
+		padding: 12mm calc(12mm + 1px) 15mm 12mm;   /* mirror print: same margins (top 12mm) + the 1px right safe-inset → identical content box on screen & PDF */
+		background: #fff;
+		box-sizing: border-box;
+		box-shadow: var(--shadow-lift, 0 6px 24px rgba(28, 27, 25, 0.14));
+	}
+}
+
+/* ---------------------------------------------------------------------------
+   8 · PRINT SURFACE  —  the printed / PDF page is WHITE. base.css paints the
+   body with the warm --surface-page; that cream must NOT carry into print, so
+   here we reset the page to pure white (component box washes are kept).
+   --------------------------------------------------------------------------- */
+@media print {
+	html, body { background: #fff; }
+	/* PDF 우측 끝 서브픽셀 클립 방어: 우측만 1px 인셋(좌측·@page 16mm 불변).
+	   잔존 시 다음 렌더에서 1px씩 상향(2→3). HTML/스크린엔 영향 없음. */
+	.cdn-issue { padding-right: 1px; }
+}

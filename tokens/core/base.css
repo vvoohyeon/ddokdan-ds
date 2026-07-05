@@ -1,0 +1,83 @@
+/* ===========================================================================
+   BASE — element defaults for Ddokdan Ilbo (똑단일보)
+   ---------------------------------------------------------------------------
+   Sensible reading defaults applied to bare HTML so any consumer page starts
+   on-brand: warm paper, large airy body type, Korean-aware line breaking.
+   =========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+	margin: 0;
+	background: var(--surface-page);
+	color: var(--text-body);
+	font-family: var(--font-body);
+	font-size: var(--fs-body);
+	line-height: var(--lh-body);
+	font-weight: var(--w-regular);
+	letter-spacing: var(--ls-normal);
+	word-break: var(--word-break);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+/* Headlines: heavier, tighter, calmer line-height. */
+h1, h2, h3, h4 {
+	margin: 0 0 var(--s-3);
+	font-family: var(--font-display);
+	font-weight: var(--w-bold);
+	line-height: var(--lh-tight);
+	letter-spacing: var(--ls-tight);
+	color: var(--text-body);
+	text-wrap: balance;
+}
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); line-height: var(--lh-snug); }
+
+p {
+	margin: 0 0 var(--s-4);
+	max-width: var(--measure);
+	text-wrap: pretty;
+}
+
+a {
+	color: var(--accent);
+	text-underline-offset: 3px;
+	text-decoration-thickness: 2px;
+}
+
+strong, b { font-weight: var(--w-bold); }
+
+hr {
+	border: 0;
+	border-top: var(--bw-hair) solid var(--divider);
+	margin: var(--s-5) 0;
+}
+
+img { max-width: 100%; display: block; }
+
+::selection { background: var(--blue-tint-2); }
+
+:focus-visible {
+	outline: var(--focus-width) solid var(--focus-ring);
+	outline-offset: var(--focus-offset);
+}
+
+/* Reusable reading helpers -------------------------------------------------- */
+
+.cdn-kicker {            /* the warm UPPERCASE flag above a headline */
+	font-size: var(--fs-label);
+	font-weight: var(--w-heavy);
+	letter-spacing: var(--ls-label);
+	text-transform: uppercase;
+	color: var(--flag);
+}
+
+.cdn-byline {            /* "글 · 그림 / 날짜" line */
+	font-size: var(--fs-caption);
+	color: var(--text-meta);
+	letter-spacing: 0;
+}

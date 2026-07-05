@@ -1,0 +1,154 @@
+/* ===========================================================================
+   WEB LAYER — Ddokdan Ilbo (똑단일보)   [web-only VARIABLES; no selectors]
+   ---------------------------------------------------------------------------
+   This file adds the token vocabulary the online site needs and that the
+   print path never wanted: interaction-state colours, fluid type wrappers,
+   the breakpoint contract, and responsive-behaviour knobs. It declares
+   VARIABLES ONLY — every selector rule lives in web-components.css.
+
+   HARD RULES honoured here:
+     • No new raw hex. Every colour is a derivation of an existing semantic
+       alias or palette tint from tokens/core/colors.css.
+     • All colour goes through a semantic alias, so a future dark theme is one
+       `@media (prefers-color-scheme: dark)` override block (scaffold at foot).
+     • Article CONTENT is FIXED-PX = print (shared .cdn-* elements keep their
+       components.css pixel sizes). Fluid type is WEB CHROME ONLY, and never
+       applied to shared content — that would break print/web parity (§4.4).
+     • The resting/idle appearance always equals the print appearance; the
+       state tokens below appear ONLY on :hover / :active / selection.
+   =========================================================================== */
+
+:root {
+
+	/* =====================================================================
+	   1 · INTERACTION-STATE TOKENS  (§5.1)
+	   Resting values mirror the print appearance; hover/active/selected are
+	   the only states that introduce a state colour. Every value derives from
+	   --accent / --flag / --good families — no new raw colour is minted.
+	   Not printed, so grayscale-safety is waived here; WCAG 2.1 AA contrast is
+	   met in every state (see web-components.css usage).
+	   ===================================================================== */
+
+	/* --- Text links --------------------------------------------------- */
+	--link:              var(--accent);          /* resting = base.css `a` colour */
+	--link-hover:        var(--accent-press);    /* darken + thicker underline    */
+	--link-active:       var(--accent-press);    /* pressed                       */
+	--link-visited:      var(--accent);          /* editorial: keep links uniform */
+	--link-underline:    var(--accent);          /* resting underline ink         */
+	--link-underline-hover: var(--accent-press);
+
+	/* --- Buttons (primary, blue) -------------------------------------- */
+	--btn-bg:            var(--accent);
+	--btn-fg:            var(--text-on-blue);
+	--btn-border:        var(--accent);
+	--btn-bg-hover:      var(--accent-press);
+	--btn-border-hover:  var(--accent-press);
+	/* NOTE (logged): --accent-press already aliases --blue-strong (#0E2750),
+	   so a colour-only active state would be indistinguishable from hover.
+	   Active therefore reuses the hover colour and is differentiated by SHAPE
+	   (a 1px downward translate) in web-components.css — not by a new colour. */
+	--btn-bg-active:     var(--accent-press);
+	--btn-border-active: var(--accent-press);
+	--btn-disabled-bg:   var(--surface-box);     /* = --paper-edge */
+	--btn-disabled-fg:   var(--text-faint);      /* = --ink-4      */
+	--btn-disabled-border: var(--divider);       /* = --rule-soft  */
+
+	/* --- Chips / segmented options ------------------------------------ */
+	--chip-bg:           var(--surface-panel);   /* resting fill = print card fill */
+	--chip-fg:           var(--text-secondary);
+	--chip-border:       var(--divider);
+	--chip-bg-hover:     var(--accent-wash);     /* = --blue-tint    */
+	--chip-border-hover: var(--blue-tint-2);
+	--chip-fg-hover:     var(--accent-press);
+	--chip-selected-bg:     var(--accent);
+	--chip-selected-fg:     var(--text-on-blue);
+	--chip-selected-border: var(--accent);
+
+	/* --- Focus (shared with core) ------------------------------------- */
+	--focus:             var(--focus-ring);      /* already defined in colors.css */
+
+	/* --- Web furniture surfaces --------------------------------------- */
+	--shell-bg:          var(--surface-page);
+	--shell-rule:        var(--hairline);        /* = --rule; shell bottom line   */
+	--nav-fg:            var(--text-secondary);
+	--nav-fg-hover:      var(--accent);
+
+	/* --- Badge channels (all derived; labels are always spelled out) --- */
+	--badge-level-bg:    var(--accent);          /* L3 / L6 — solid blue         */
+	--badge-level-fg:    var(--text-on-blue);
+	--badge-region-bg:   var(--surface-panel);   /* 성남 / 제주 — neutral tile    */
+	--badge-region-fg:   var(--text-secondary);
+	--badge-region-border: var(--divider);
+	--badge-depth-bg:    var(--flag-wash);       /* 심층 — the ONE warm wash      */
+	--badge-depth-fg:    var(--flag-press);
+	--badge-depth-border: var(--warm-tint-2);
+	--badge-pending-bg:  var(--surface-box);     /* 번역 준비 중 — quiet, dashed  */
+	--badge-pending-fg:  var(--text-meta);
+	--badge-pending-border: var(--text-faint);
+
+	/* --- Answer reveal ------------------------------------------------- */
+	--reveal-bg:         var(--good-tint);
+	--reveal-accent:     var(--good);
+
+	/* =====================================================================
+	   2 · FLUID TYPE  (§5.2, as AMENDED by the 2026-07-03 render-truth pass)
+	   ---------------------------------------------------------------------
+	   DECISION: article CONTENT is FIXED-PX = print. Shared .cdn-* elements
+	   keep their components.css pixel sizes at every viewport (18px body reads
+	   well on mobile; the reading column is bounded by --measure 34em and
+	   --content-max 1040px, not by the viewport). Fluid type is therefore
+	   reserved for WEB-ONLY CHROME, which has no print counterpart.
+
+	   Consequently the earlier full fluid scale (masthead/display/h1/h2/lead/
+	   h3/body/label/fine) was REMOVED: none had a web-only consumer and every
+	   one names a content size, so wiring it onto content would silently break
+	   print/web parity (the landmine the render-truth pass found). Only the two
+	   vars that a web-only component actually consumes remain — both guarded. */
+	--fs-small-fluid:    clamp(16.5px, 1.8vw, var(--fs-small));   /* 16.5 → 18 · WEB CHROME ONLY (shell nav). Never apply to shared content. */
+	--fs-caption-fluid:  clamp(14px,  1.5vw, var(--fs-caption));  /* 14 → 15 · WEB CHROME ONLY (issue-head meta). Never apply to shared content. */
+
+	/* =====================================================================
+	   3 · BREAKPOINTS  (§5.3)   — CONTRACT DEFAULTS, UNCHANGED.
+	   CSS variables cannot be used inside media-query conditions, so this is
+	   the single definition table; web-components.css references these exact
+	   px values in its `@media (min-width: …)` queries and cites this note.
+	   Mobile-first: the no-query base IS the mobile layout; only min-width
+	   queries step up.
+	       --bp-sm : 480px   (large phone / small tablet)
+	       --bp-md : 768px   (tablet — shared-element grids go multi-column)
+	       --bp-lg : 1040px  (desktop; == --content-max, the reference width)
+	   Kept at the contract defaults: --bp-lg is deliberately locked to
+	   --content-max (1040px) so the desktop step and the reference width are
+	   the same line. No divergence — see report §6.
+	   ===================================================================== */
+	--bp-sm: 480px;   /* documentation mirror — not usable in @media */
+	--bp-md: 768px;   /* documentation mirror — not usable in @media */
+	--bp-lg: 1040px;  /* documentation mirror — not usable in @media */
+
+	/* =====================================================================
+	   4 · RESPONSIVE-BEHAVIOUR KNOBS  (§5.4)  — consumed by web-components.
+	   ===================================================================== */
+	--web-content-max:   var(--content-max);     /* 1040px reading column      */
+	--web-pad-inline:    var(--s-6);             /* desktop page side padding  */
+	--web-pad-inline-sm: var(--s-4);             /* ≤ sm side padding (reduced) */
+	--fig-float-w:       48%;                    /* = print .fig-float-* width  */
+	--wc-gap:            var(--s-3);             /* vocab-grid gap on web       */
+	--shell-h:           64px;                   /* shell header target height  */
+}
+
+/* ===========================================================================
+   5 · DARK-MODE SCAFFOLD  (§5.5)  — STRUCTURE ONLY, NO VALUES.
+   Because every web colour above resolves through a semantic alias, a future
+   dark theme is introduced by overriding those aliases inside the block below.
+   Intentionally empty — values are out of scope for this revision.
+   ---------------------------------------------------------------------------
+   @media (prefers-color-scheme: dark) {
+     :root {
+       --surface-page: … ; --surface-panel: … ; --surface-box: … ;
+       --text-body: … ; --text-secondary: … ; --text-meta: … ;
+       --accent: … ; --accent-press: … ; --accent-wash: … ;
+       --flag: … ; --flag-wash: … ; --good: … ; --good-tint: … ;
+       --divider: … ; --hairline: … ;
+     }
+   }
+   =========================================================================== */

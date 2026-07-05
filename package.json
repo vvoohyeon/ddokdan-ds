@@ -1,0 +1,15 @@
+{
+  "name": "ddokdan-ds",
+  "version": "1.0.0",
+  "description": "Ddokdan Ilbo design system — tokens, components, fonts.",
+  "license": "UNLICENSED",
+  "repository": { "type": "git", "url": "github:vvoohyeon/ddokdan-ds" },
+  "files": ["styles.css", "core.css", "web.css", "tokens", "assets", "README.md"],
+  "exports": {
+    "./styles.css": "./styles.css",
+    "./core.css": "./core.css",
+    "./web.css": "./web.css",
+    "./tokens/*": "./tokens/*",
+    "./assets/*": "./assets/*"
+  }
+}

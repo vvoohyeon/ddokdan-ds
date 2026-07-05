@@ -1,0 +1,13 @@
+/* ===========================================================================
+   Ddokdan Ilbo (똑단일보) — CORE entry point.
+   The medium-neutral foundation: fonts, colors, typography, spacing and
+   element defaults ONLY. No print contract, no web overlay, no components.
+   Import this when a consumer wants the raw token layer and will supply its
+   own composition. Same five files, same order, as the head of styles.css.
+   =========================================================================== */
+
+@import url('./tokens/core/fonts.css');
+@import url('./tokens/core/colors.css');
+@import url('./tokens/core/typography.css');
+@import url('./tokens/core/spacing.css');
+@import url('./tokens/core/base.css');
