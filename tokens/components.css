@@ -40,7 +40,7 @@
 .cdn-open{ break-inside:avoid; break-after:avoid; }
 
 /* --- Masthead (page 1 only; no English eyebrow) --------------------------- */
-.masthead{ margin-bottom:8mm; break-inside:avoid; }
+.masthead{ margin-bottom:12mm; break-inside:avoid; }   /* v1.1 — 8mm 은 제호와 첫 기사 제목이 한 덩어리로 읽혔다 */
 .masthead-row{
 	display:flex; align-items:flex-end; justify-content:space-between; gap:18px;
 	border-bottom:5px solid var(--rule); padding-bottom:8px;
@@ -113,7 +113,9 @@
 .wc-grid:has(> .wc-card:nth-child(4):last-child){ grid-template-columns:1fr 1fr; }
 .wc-card{ background:var(--paper-2); padding:10px 12px; }
 
-/* 어휘 사이드바 변형 — CD가 가장 짧은 2개 기사에만 .cdn-wordcard--aside로 방출(레이아웃 다변화).
+/* 어휘 사이드바 변형 — **v1.1 부터 인쇄 지면에서는 쓰지 않는다.** 고정 37% 는 12단 격자 밖이라
+   카드 옆 본문의 좌측 시작점이 어긋나고, 이미지 옆에 떠서 판면 한쪽에 빈 기둥을 남긴다. 대체는
+   print-core 의 .cdn-wordcard--band(보조 이미지와 같은 쪽 아래, 같은 단수)다. 기존 지면 호환으로 남긴다.
    v1 실측 37% 우측 플로트, 카드 세로 1열. 본문이 좌측을 채우고 사이드바 아래는 풀폭으로 흐름.
    clear:none → .cdn-wordcard의 clear:both를 무효화해 본문 옆에 떠야 함. 짧은 기사 한정이라 지연(defer) 안전. */
 .cdn-wordcard--aside{ float:right; width:37%; margin:4px 0 14px 22px; clear:none; break-inside:avoid; }

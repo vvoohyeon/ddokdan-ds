@@ -14,8 +14,12 @@
      2. UNBREAKABLE BLOCKS — a figure, a fact box, a word box, one quiz
         question, the answer box are NEVER split across a page break (no empty
         box shells, no half questions).
-     3. UNCROPPED PHOTOS — images keep their true aspect ratio and are NEVER
-        cropped to fill a frame.
+     3. UNCROPPED PHOTOS — the stylesheet never crops. An image is placed at
+        its own ratio and `object-fit: cover` is not used: in a printed PDF a
+        covered image records its PRE-CROP rectangle, so every measurement of
+        the page (holes, tails, grid) reads a picture that is not there. An
+        issue that wants a different ratio supplies an already-cropped FILE —
+        cropping is an editorial act, not a rendering trick.
 
    SCOPE. This is the publishing path: an issue written as plain .cdn-* markup
    and printed / exported. The design system is CSS-only — components.css dresses
@@ -235,4 +239,87 @@ figure,           /* any bare figure, as a safety net               */
 	/* PDF 우측 끝 서브픽셀 클립 방어: 우측만 1px 인셋(좌측·@page 16mm 불변).
 	   잔존 시 다음 렌더에서 1px씩 상향(2→3). HTML/스크린엔 영향 없음. */
 	.cdn-issue { padding-right: 1px; }
+}
+
+
+/* ===========================================================================
+   12-COLUMN GRID — the print issue's layout vocabulary
+   ---------------------------------------------------------------------------
+   The measure is 186mm = 12 columns of 11.83mm with 4mm gutters. Every float in
+   an issue is 4, 6 or 8 columns wide, sits on a margin line, and carries the
+   gutter on the side the body text wraps around. Arbitrary percentages are what
+   produce several different left edges on one page — what a reader sees as
+   "misaligned" — so the widths live here as three values and nowhere else.
+
+     <figure class="cdn-figure cdn-span-6 cdn-float-right">…</figure>
+     <div class="cdn-wordcard cdn-wordcard--band cdn-span-6 cdn-float-right">…</div>
+
+   Scoped under .cdn-issue because styles.css loads this file BEFORE
+   components.css, where `.fig-float-*` would otherwise win the width. These
+   classes are print-only: web.css does not import this file.
+   =========================================================================== */
+.cdn-issue {
+	--cdn-measure: 186mm;
+	--cdn-gutter: 3.8mm;          /* the 4mm grid gutter, less 0.2mm rounding slack */
+	--cdn-span-4: 31.9%;
+	--cdn-span-6: 48.9%;
+	--cdn-span-8: 65.9%;
+}
+
+.cdn-issue .cdn-span-4 { width: var(--cdn-span-4); }
+.cdn-issue .cdn-span-6 { width: var(--cdn-span-6); }
+.cdn-issue .cdn-span-8 { width: var(--cdn-span-8); }
+
+/* The gutter goes on the side the text wraps around. `clear` keeps a second
+   float of the same span from standing BESIDE the first — two 6-column floats
+   fit the measure exactly, so without it they would form a row. */
+.cdn-issue .cdn-float-right {
+	float: right; clear: right;
+	margin-left: var(--cdn-gutter); margin-right: 0;
+}
+.cdn-issue .cdn-float-left {
+	float: left; clear: left;
+	margin-right: var(--cdn-gutter); margin-left: 0;
+}
+
+/* --- 띠 어휘 카드 ---------------------------------------------------------
+   Vocabulary cards continuing the column UNDER a floated sub image, at the same
+   span and on the same side, so the two share one vertical line and the body
+   wraps them as a single column. On the OPPOSITE margin instead, the text edge
+   beside them lands one gutter away from the image's edge — the measure holds
+   6 + gutter + 6, so two facing columns cannot each own a gutter, and whatever
+   is subtracted from the card's width becomes visible misalignment.
+   Always a single column: the width here is a column, not a page. ------------ */
+.cdn-issue .cdn-wordcard--band { margin: 6px 0 14px; break-inside: avoid; }
+.cdn-issue .cdn-wordcard--band .wc-grid { grid-template-columns: 1fr !important; gap: 12px; }
+
+/* --- 짝 어휘 카드 ---------------------------------------------------------
+   The last page of an article is often all furniture — cards, the question, the
+   quiz — with no running text left. A floated sub image there has nothing beside
+   it, and moving it back a page puts it next to the main photograph. Standing
+   the image and the card column FACING each other fills the measure and settles
+   both. The gutter belongs to the image alone: 6 + gutter + 6 is exactly the
+   measure, so if the cards claimed one too the pair would not fit on one line.
+   Declared after .cdn-float-* so its `clear` and margin win. ----------------- */
+.cdn-issue .cdn-wordcard--pair { clear: none; margin: 0 0 14px; }
+.cdn-issue .cdn-wordcard--pair .wc-grid { grid-template-columns: 1fr !important; gap: 12px; }
+
+/* --- 새 면에서 시작하는 기사 ----------------------------------------------
+   An article normally continues in whatever space the previous article's quiz
+   leaves. When taking that space would put two photographs on one page — the
+   previous article's sub image and this one's main — the article starts a new
+   page instead; no per-article width or position can resolve that collision.
+   Such an article needs no rule: the top of the page is already the boundary. */
+.cdn-issue .cdn-article--newpage { break-before: page; }
+
+/* --- 기사 경계 규칙선 -----------------------------------------------------
+   An article starting partway down a page needs a rule; one starting at the top
+   of a page does not — the title is already the boundary. ------------------- */
+.cdn-issue .cdn-artrule { border-top: 3px solid var(--blue); margin: 14mm 0 6mm; }
+
+/* --- 짧은 선택지 3열 ------------------------------------------------------
+   Three choices that are all short ("1m보다 짧다 / 1m보다 길다 / 1m와 똑같다")
+   take three lines and leave the right half of the block empty. ------------- */
+.cdn-issue .q-choices--3up {
+	display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px;
 }

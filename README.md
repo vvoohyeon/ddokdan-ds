@@ -39,6 +39,20 @@ printed page and a web page read as the same newspaper.
 import 'ddokdan-ds/web.css';
 ```
 
+## Changes
+
+**v1.1.0** — the print issue's layout vocabulary moves into the design system.
+The typesetter had been computing column widths, gutters, float sides and the
+article rule as inline styles on every block; they are now four groups of
+classes in `print-core.css` (scoped under `.cdn-issue`, print-only). Also:
+`.masthead` bottom margin 8mm → 12mm, and `.cdn-wordcard--aside` is retired for
+print in favour of `.cdn-wordcard--band`. The "uncropped photos" clause is
+unchanged and now says why: a covered image records its pre-crop rectangle in
+the PDF, so a page measured after a CSS crop reads a picture that is not there.
+An issue wanting another ratio supplies an already-cropped file.
+
+**v1.0.0** — initial package.
+
 ## Versioning
 
 - **Pin to a version tag, always** — e.g. `@v1.0.0`. Both consumers resolve the
@@ -52,7 +66,13 @@ import 'ddokdan-ds/web.css';
 - **`tokens/core/`** — fonts, colours, typography, spacing, element defaults.
   Medium-neutral; the frozen foundation both media share.
 - **`tokens/print/print-core.css`** — the CSS-native A4 page contract (page
-  fidelity, unbreakable blocks, uncropped photos). Print entry only.
+  fidelity, unbreakable blocks, uncropped photos) plus the **12-column grid**
+  the print issue lays out on: `--cdn-span-4/6/8` and `.cdn-float-left/right`,
+  the `.cdn-wordcard--band` and `--pair` columns, `.cdn-artrule`,
+  `.cdn-article--newpage`,
+  `.q-choices--3up`. Print
+  entry only — `web.css` does not import this file, so none of it reaches the
+  site.
 - **`tokens/web/`** — `web-layer.css` (web-only variables: interaction states,
   fluid type, breakpoints, responsive knobs) and `web-components.css` (layout /
   interaction overlays on the shared elements + web-only furniture).
