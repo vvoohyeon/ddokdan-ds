@@ -215,7 +215,12 @@
    ONE section just above the answer key, cut off from the last quiz by the
    heavy rule + the injected heading "이런 일도 있었어요". Grid varies by count
    (prompt sets cols-1/2/3). Balanced card padding. -------------------------- */
-.cdn-fillers{ border-top:4px solid var(--rule); margin-top:9mm; padding-top:12px; break-inside:avoid; }
+/* The section flows: it may begin in the whitespace left under the last quiz
+   and carry on across the page break. `break-inside: avoid` on the SECTION
+   forced the whole block onto a fresh page whenever it did not fit whole, so
+   the space it was meant to fill was exactly the space it skipped. Each card
+   still keeps `break-inside: avoid` below — a card must not split, the set may. */
+.cdn-fillers{ border-top:4px solid var(--rule); margin-top:9mm; padding-top:12px; break-inside:auto; }
 .cdn-fillers::before{
 	content:"이런 일도 있었어요"; display:block;
 	font-size:16px; font-weight:800; color:var(--ink-2); letter-spacing:.02em; margin-bottom:12px;

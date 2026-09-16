@@ -261,13 +261,22 @@ figure,           /* any bare figure, as a safety net               */
 .cdn-issue {
 	--cdn-measure: 186mm;
 	--cdn-gutter: 3.8mm;          /* the 4mm grid gutter, less 0.2mm rounding slack */
+	/* Every whole-column width the 12-column measure allows a float to take.
+	   Odd spans matter because they pair with each other (5+7) exactly as the
+	   even ones do (4+8, 6+6): each pair plus one gutter is the full measure.
+	   With only 4/6/8 the compositor has three widths to balance two columns
+	   with, and the leftover shows up as whitespace it cannot close. */
 	--cdn-span-4: 31.9%;
+	--cdn-span-5: 40.4%;
 	--cdn-span-6: 48.9%;
+	--cdn-span-7: 57.4%;
 	--cdn-span-8: 65.9%;
 }
 
 .cdn-issue .cdn-span-4 { width: var(--cdn-span-4); }
+.cdn-issue .cdn-span-5 { width: var(--cdn-span-5); }
 .cdn-issue .cdn-span-6 { width: var(--cdn-span-6); }
+.cdn-issue .cdn-span-7 { width: var(--cdn-span-7); }
 .cdn-issue .cdn-span-8 { width: var(--cdn-span-8); }
 
 /* The gutter goes on the side the text wraps around. `clear` keeps a second
