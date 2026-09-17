@@ -20,9 +20,14 @@
 /* --- running text ---------------------------------------------------------
    :where() zeroes the wrapper's specificity so CLASSED paragraphs (.hook,
    .fl-text, .cdn-dyk p) win their own size/colour; a bare body <p> still gets
-   this 18px default. orphans/widows:3 keep a 1–2 line tail from stranding at a
-   page boundary (a sub-3-line sliver moves whole to the next page instead). -- */
-:where(.cdn-issue) p{ max-width:none; font-size:18px; line-height:1.8; margin:0 0 14px; color:var(--ink); orphans:3; widows:3; }
+   this 18px default. `orphans:3` keeps at least three lines of a split paragraph
+   on the page it starts — a one-line stub at the foot of a page reads as a
+   mistake. `widows` is 2, not 3: the property guarantees lines at the TOP of the
+   next page, and it buys them by pushing lines OFF the current one. At 3 a break
+   that would leave two lines over stole a third from the page before, and that
+   stolen line is visible as a gap at the bottom of a full page (3호 p4, p7). Two
+   still prevents the single stranded line, which is the thing worth preventing. */
+:where(.cdn-issue) p{ max-width:none; font-size:18px; line-height:1.8; margin:0 0 14px; color:var(--ink); orphans:3; widows:2; }
 .cdn-article{ overflow:hidden; }                 /* contains floated figures */
 
 /* --- between articles -----------------------------------------------------
@@ -249,10 +254,13 @@
 .ah-sub{ font-size:14px; color:var(--ink-3); }
 .ans-row{ margin-bottom:0; }   /* row spacing handled by the grid row-gap */
 .ar-title{ display:block; font-weight:800; color:var(--blue); font-size:15px; margin-bottom:2px; }
+/* One answer per line, so the column reads in the same order the quiz asked.
+   Scanning to mark is a lookup, not reading: the eye goes down a list, and a
+   run of pairs wrapped inline makes it hunt. The two-column grid above stays. */
 .ar-list{ font-size:15.5px; color:var(--ink); line-height:1.6; }
 .ar-note{ color:var(--ink-3); font-size:13px; }
 .aq{ font-weight:800; }   /* 정답 모음 question label (Q1, Q2 …): bold, set off from its answer */
-.ans-pair{ white-space:nowrap; }   /* 'Q{n} 정답'을 한 단위로 — 라벨↔정답이 줄 끝에서 분리되지 않게. 한 줄에 못 들어가면 쌍째 다음 줄로(구분자 ·는 .ans-pair 바깥 = 유일한 줄바꿈 지점). */
+.ans-pair{ display:block; white-space:nowrap; }   /* 'Q{n} 정답'을 한 단위로, 그리고 한 줄에 하나씩 — 퀴즈가 물은 차례 그대로 내려간다. */
 
 /* --- Feedback box --------------------------------------------------------- */
 .cdn-box.feedback{ display:flex; align-items:center; gap:16px; border:2px solid var(--rule-soft); padding:14px 18px; margin-top:14px; }
