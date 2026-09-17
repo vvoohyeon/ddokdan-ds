@@ -299,7 +299,12 @@ figure,           /* any bare figure, as a safety net               */
    6 + gutter + 6, so two facing columns cannot each own a gutter, and whatever
    is subtracted from the card's width becomes visible misalignment.
    Always a single column: the width here is a column, not a page. ------------ */
-.cdn-issue .cdn-wordcard--band { margin: 6px 0 14px; break-inside: avoid; }
+/* Longhand on purpose. The `margin` shorthand here would reset the
+   margin-left/right that .cdn-float-* set just above, and the band would sit
+   flush against the wrapping body text — the column it is meant to continue
+   would lose exactly the gutter that makes it a column (3호 p2: body ran to
+   within 1.5mm of the card). Only the vertical margins belong to this rule. */
+.cdn-issue .cdn-wordcard--band { margin-top: 6px; margin-bottom: 14px; break-inside: avoid; }
 .cdn-issue .cdn-wordcard--band .wc-grid { grid-template-columns: 1fr !important; gap: 12px; }
 
 /* --- 짝 어휘 카드 ---------------------------------------------------------
