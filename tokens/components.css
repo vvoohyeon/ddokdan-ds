@@ -232,6 +232,13 @@
 .fl-grid.cols-2{ grid-template-columns:1fr 1fr; }
 .fl-grid.cols-3{ grid-template-columns:repeat(3,1fr); }
 .fl-card{ border:1px dashed var(--ink-4); padding:12px 14px; background:transparent; break-inside:avoid; }
+/* Uneven card widths. Six equal boxes in a grid read as a form; letting the
+   longest item take the measure and the next take two columns gives the set a
+   shape without changing what it says. The compositor picks which card gets
+   which class by text length, and picks the spans so the cells tile exactly —
+   a ragged last row would put back the hole this is meant to avoid. */
+.fl-card--wide{ grid-column:1 / -1; }
+.fl-card--half{ grid-column:span 2; }
 .fl-head{ font-size:16px; font-weight:800; color:var(--ink); margin-bottom:5px; }
 .fl-text{ font-size:14.5px; line-height:1.6; color:var(--ink-2); margin:0; max-width:none; }
 
