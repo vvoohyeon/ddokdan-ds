@@ -116,6 +116,14 @@
 .wc-grid:has(> .wc-card:nth-child(1):last-child){ grid-template-columns:1fr; }
 .wc-grid:has(> .wc-card:nth-child(2):last-child){ grid-template-columns:1fr 1fr; }
 .wc-grid:has(> .wc-card:nth-child(4):last-child){ grid-template-columns:1fr 1fr; }
+/* Five cards do not tile three columns — the sixth cell stays empty, and that
+   leftover measured 20cm² on 3호 p8 and p14, over the hole threshold. Six columns
+   absorb them: two cards take three columns each, three take two, and both rows
+   fill exactly. The compositor puts the two longest first (it adds this class
+   only for the full-width tail grid, never for a band/pair/rail column). */
+.wc-grid--5up{ grid-template-columns:repeat(6,1fr) !important; }
+.wc-grid--5up > .wc-card:nth-child(-n+2){ grid-column:span 3; }
+.wc-grid--5up > .wc-card:nth-child(n+3){ grid-column:span 2; }
 .wc-card{ background:var(--paper-2); padding:10px 12px; }
 
 /* 어휘 사이드바 변형 — **v1.1 부터 인쇄 지면에서는 쓰지 않는다.** 고정 37% 는 12단 격자 밖이라
