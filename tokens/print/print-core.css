@@ -114,14 +114,16 @@
    page number always sits on the OUTER edge of the spread. Opt in with the class
    .cdn-spreads on <body>; without it every page keeps the line above unchanged
    (single sheets). Page 1 is the cover and stands alone on the right, so left
-   pages are the even ones (2·3, 4·5 … face each other). Only the two margin-box
-   strings trade places — size, margins, and the text block are untouched, so a
-   page breaks exactly as it does without the class. The :first guard keeps the
-   cover clean whatever side an engine assigns to it. */
+   pages are the even ones (2·3, 4·5 … face each other). On a left page the
+   folio reads number-first ("N면 · date") so the number, not the date, touches
+   the outer edge — a true mirror of the right page's "date · N면". Only the two
+   margin-box strings change — size, margins, and the text block are untouched,
+   so a page breaks exactly as it does without the class. The :first guard keeps
+   the cover clean whatever side an engine assigns to it. */
 .cdn-spreads { page: cdn-spreads; }
 @page cdn-spreads:left {
 	@bottom-left {
-		content: var(--cdn-date, "") "  ·  " counter(page) "면";
+		content: counter(page) "면  ·  " var(--cdn-date, "");
 		font-weight: 400;
 		color: var(--ink-3);
 	}
